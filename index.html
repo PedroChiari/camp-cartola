@@ -153,13 +153,70 @@
   .premio h4 { margin: 0; font: 800 24px/1 var(--display); text-transform: uppercase; color: var(--ouro); }
   .premio p { margin: 4px 0 0; color: var(--cal-2); }
 
+  /* Quem escalou */
+  .escalou { display: grid; gap: 10px; }
+  .escalou-lista { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 8px; }
+  .esc-item { display: flex; align-items: center; gap: 12px; padding: 10px 12px; border-radius: 10px; background: var(--grama-2); border: 1px solid var(--linha); min-width: 0; }
+  .esc-item .escudo { width: 36px; height: 36px; }
+  .esc-item b { display: block; font: 700 16px/1.1 var(--rotulo); overflow-wrap: anywhere; }
+  .esc-item span { font: 600 13px/1.2 var(--rotulo); letter-spacing: .04em; }
+  .esc-item .sim { color: #5BD08A; }
+  .esc-item .nao { color: #FFB45C; }
+  .esc-item .icone { margin-left: auto; flex: none; width: 26px; height: 26px; border-radius: 50%; display: grid; place-items: center; font: 800 15px/1 var(--rotulo); }
+  .esc-item .icone.sim { background: rgba(91, 208, 138, .16); }
+  .esc-item .icone.nao { background: rgba(255, 180, 92, .16); }
+  .escalou .obs { margin: 0; color: var(--cal-3); font-size: 13px; }
+
+  /* Chance de título */
+  .chance-barra { display: flex; height: 44px; border-radius: 8px; overflow: hidden; gap: 2px; background: var(--grama-1); }
+  .chance-barra div { display: grid; place-items: center; min-width: 0; font: 800 18px/1 var(--display); color: #fff; transition: flex-grow .6s ease; }
+  .chance-lista { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 12px; margin-top: 16px; }
+  .chance-lista div { display: grid; gap: 2px; }
+  .chance-lista b { display: flex; align-items: center; gap: 8px; font: 700 15px/1.2 var(--rotulo); color: var(--cal-2); }
+  .chance-lista b i { width: 10px; height: 10px; border-radius: 3px; flex: none; }
+  .chance-lista strong { font: 900 40px/1 var(--display); font-variant-numeric: tabular-nums; }
+  .chance-lista small { color: var(--cal-3); font: 500 13px/1.3 var(--rotulo); }
+
+  /* Rodada: seletor, prêmios, escalação */
+  .chips { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 16px; }
+  .chip { appearance: none; border: 1px solid var(--linha); background: transparent; color: var(--cal-2); padding: 8px 12px; border-radius: 999px; font: 600 14px/1 var(--rotulo); letter-spacing: .04em; cursor: pointer; }
+  .chip[aria-pressed="true"] { background: var(--cal); color: var(--grama-1); border-color: var(--cal); }
+  .chip small { font-size: 11px; opacity: .75; text-transform: uppercase; letter-spacing: .08em; }
+  .premios { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 10px; margin-bottom: 20px; }
+  .premio-card { display: grid; gap: 6px; padding: 14px 16px; border-radius: 12px; background: var(--grama-1); border: 1px solid var(--linha); min-width: 0; }
+  .premio-card b { font: 800 22px/1.05 var(--display); text-transform: uppercase; overflow-wrap: anywhere; }
+  .premio-card span { color: var(--cal-2); font: 500 14px/1.3 var(--rotulo); }
+  .premio-card span.k { font: 600 12px/1.2 var(--rotulo); letter-spacing: .14em; text-transform: uppercase; color: var(--cal-3); }
+  .premio-card.ouro { border-color: rgba(242, 193, 78, .45); }
+  .premio-card.ouro b { color: var(--ouro); }
+  .premio-card.ruim b { color: #FF9A62; }
+  .abas { display: flex; gap: 6px; overflow-x: auto; margin-bottom: 12px; }
+  .aba { appearance: none; flex: 1 0 auto; display: inline-flex; align-items: center; gap: 8px; justify-content: center; padding: 10px 12px; border-radius: 10px; border: 1px solid var(--linha); background: transparent; color: var(--cal-2); font: 700 15px/1 var(--rotulo); cursor: pointer; white-space: nowrap; }
+  .aba i { width: 8px; height: 8px; border-radius: 50%; }
+  .aba[aria-selected="true"] { background: var(--grama-3); color: var(--cal); border-color: rgba(238, 242, 230, .3); }
+  .elenco { list-style: none; margin: 0; padding: 0; display: grid; }
+  .elenco li { display: grid; grid-template-columns: 34px 26px 1fr auto; align-items: center; gap: 10px; padding: 9px 4px; border-bottom: 1px solid var(--linha); }
+  .elenco li:last-child { border-bottom: 0; }
+  .pos { font: 700 12px/1 var(--rotulo); letter-spacing: .08em; color: var(--cal-3); }
+  .elenco img { width: 24px; height: 24px; object-fit: contain; }
+  .jog { min-width: 0; font: 600 16px/1.2 var(--rotulo); overflow-wrap: anywhere; }
+  .cap { display: inline-grid; place-items: center; width: 20px; height: 20px; margin-left: 6px; border-radius: 50%; background: var(--ouro); color: #2A1F05; font: 800 11px/1 var(--rotulo); vertical-align: 1px; }
+  .jog small { display: block; color: var(--cal-3); font: 500 12px/1.2 var(--rotulo); }
+  .pts { font: 800 20px/1 var(--display); font-variant-numeric: tabular-nums; text-align: right; }
+  .pts.neg { color: #FF8A8A; }
+  .pts.zero { color: var(--cal-3); }
+  .elenco-total { display: flex; justify-content: space-between; align-items: baseline; padding: 12px 4px 0; font: 600 14px/1 var(--rotulo); letter-spacing: .08em; text-transform: uppercase; color: var(--cal-3); }
+  .elenco-total strong { font: 900 28px/1 var(--display); color: var(--cal); letter-spacing: 0; }
+
   footer { display: flex; flex-wrap: wrap; justify-content: space-between; gap: 8px; color: var(--cal-3); font: 500 13px/1.4 var(--rotulo); letter-spacing: .04em; }
 
   .erro { padding: 20px; border-radius: 12px; background: rgba(255, 77, 77, .1); color: #FFB3B3; }
 
   @media (max-width: 640px) {
     .lider { grid-template-columns: auto 1fr; }
-    .lider .escudo { width: 84px; height: 84px; }
+    .lider .escudo { width: 72px; height: 72px; }
+    .lider-info h2 { font-size: 28px; }
+    .premio-card b { font-size: 19px; }
     .placar { grid-column: 1 / -1; text-align: left; }
     .secao-titulo { flex-direction: column; align-items: flex-start; }
     .secao-titulo span { text-align: left; }
@@ -186,6 +243,12 @@
     <div class="rodadas" id="rodadas"></div>
   </section>
 
+  <section id="escalou" class="escalou" hidden aria-label="Quem já escalou">
+    <div class="secao-titulo" style="margin:0"><h3 id="escalou-titulo">Quem já escalou</h3><span id="escalou-info"></span></div>
+    <div class="escalou-lista" id="escalou-lista"></div>
+    <p class="obs">Quem não mexer no time vai com a mesma escalação da rodada passada.</p>
+  </section>
+
   <section id="lider" class="lider" aria-live="polite"></section>
   <p class="regra">Vale a soma dos pontos do Cartola de cada um, da rodada 29 até a 38. O site atualiza sozinho.</p>
 
@@ -195,11 +258,31 @@
   </section>
 
   <section>
+    <div class="secao-titulo"><h3>Chance de título</h3><span id="chance-info"></span></div>
+    <div class="painel">
+      <div class="chance-barra" id="chance-barra" role="img"></div>
+      <div class="chance-lista" id="chance-lista"></div>
+      <p class="nota">O site simula 20 mil vezes as rodadas que faltam, usando a média e a variação de pontos de cada time na temporada. É uma estimativa, não garantia.</p>
+    </div>
+  </section>
+
+  <section id="sec-rodada">
+    <div class="secao-titulo"><h3 id="rodada-titulo">Resumo da rodada</h3><span id="rodada-info"></span></div>
+    <div class="painel">
+      <div class="chips" id="rodada-chips" role="group" aria-label="Escolher rodada"></div>
+      <div class="premios" id="premios"></div>
+      <div class="abas" id="abas" role="tablist" aria-label="Escolher time"></div>
+      <ul class="elenco" id="elenco"></ul>
+      <div class="elenco-total" id="elenco-total"></div>
+    </div>
+  </section>
+
+  <section>
     <div class="secao-titulo"><h3>A corrida</h3><span>Pontos acumulados na disputa</span></div>
     <div class="painel">
       <div class="legenda" id="legenda"></div>
       <div class="grafico" id="grafico"></div>
-      <p class="dica-uso">Toque ou passe o mouse no gráfico para ver o placar depois de cada rodada.</p>
+      <p class="dica-uso" id="dica-uso">Toque ou passe o mouse no gráfico para ver o placar depois de cada rodada.</p>
     </div>
   </section>
 
@@ -279,7 +362,7 @@
     // Líder
     var parcialLider = aoVivo && lider.parcial != null ? '<span class="parcial-chip">+' + fmt(lider.parcial) + " pontos da rodada rolando</span>" : "";
     var selo;
-    if (fechadas === 0 && !aoVivo) selo = '<span class="selo empate">Todos zerados · começa na 29</span>';
+    if (fechadas === 0 && !aoVivo) selo = '<span class="selo empate">Começa na rodada 29</span>';
     else if (empatados.length > 1) selo = '<span class="selo empate">Empate na ponta</span>';
     else if (encerrado) selo = '<span class="selo">Campeão · leva a camisa</span>';
     else selo = '<span class="selo">1º lugar</span>';
@@ -308,11 +391,148 @@
         '<p class="frase">' + frase + "</p></article>";
     }).join("");
 
+    renderEscalou(d, encerrado);
+    renderChance(d, encerrado);
+    renderRodada(d, times[0].id);
     renderGrafico(d, aoVivo);
     renderTabela(d, aoVivo);
 
     var at = d.atualizado_em ? new Date(d.atualizado_em) : null;
     el("atualizado").textContent = at ? "Números atualizados em " + at.toLocaleString("pt-BR", { day: "2-digit", month: "2-digit", hour: "2-digit", minute: "2-digit" }) : "";
+  }
+
+  var POS = { 1: "GOL", 2: "LAT", 3: "ZAG", 4: "MEI", 5: "ATA", 6: "TÉC" };
+  var ORDEM_POS = { 1: 0, 2: 1, 3: 2, 4: 3, 5: 4, 6: 5 };
+  var nomeTime = function (d, id) { var t = d.times.find(function (x) { return String(x.id) === String(id); }); return t ? t.nome : ""; };
+
+  function renderEscalou(d, encerrado) {
+    var sec = el("escalou");
+    var mostrar = d.status_mercado === 1 && !encerrado && d.times.some(function (t) { return t.escalou != null; });
+    sec.hidden = !mostrar;
+    if (!mostrar) return;
+    el("escalou-titulo").textContent = "Quem já escalou a " + d.rodada_atual;
+    var n = d.times.filter(function (t) { return t.escalou; }).length;
+    el("escalou-info").textContent = n + " de " + d.times.length + " escalados";
+    el("escalou-lista").innerHTML = d.times.map(function (t) {
+      var ok = !!t.escalou;
+      return '<div class="esc-item">' + escudo(t) + '<div style="min-width:0"><b>' + esc(t.nome) + '</b><span class="' + (ok ? "sim" : "nao") + '">' +
+        (ok ? "Já escalou" : "Ainda não escalou") + '</span></div><span class="icone ' + (ok ? "sim" : "nao") + '" aria-hidden="true">' + (ok ? "✓" : "!") + "</span></div>";
+    }).join("");
+  }
+
+  // Gerador pseudoaleatório com semente fixa: o resultado não muda a cada recarga
+  function mulberry32(a) { return function () { a |= 0; a = a + 0x6D2B79F5 | 0; var t = Math.imul(a ^ a >>> 15, 1 | a); t = t + Math.imul(t ^ t >>> 7, 61 | t) ^ t; return ((t ^ t >>> 14) >>> 0) / 4294967296; }; }
+
+  function renderChance(d, encerrado) {
+    var k = encerrado ? 0 : Math.max(0, d.rodada_fim - d.ultima_fechada);
+    var perfis = d.times.map(function (t) {
+      var pts = Object.values(t.historico || {}).concat(Object.values(t.rodadas || {})).filter(function (v) { return v > 0; });
+      var media = pts.length ? pts.reduce(function (a, b) { return a + b; }, 0) / pts.length : 50;
+      var dp = pts.length > 1 ? Math.sqrt(pts.reduce(function (a, b) { return a + (b - media) * (b - media); }, 0) / (pts.length - 1)) : 15;
+      return { t: t, media: media, dp: dp, vitorias: 0 };
+    });
+    var N = k ? 20000 : 1, rnd = mulberry32(20260929);
+    for (var s = 0; s < N; s++) {
+      var melhor = -Infinity, lideres = [];
+      perfis.forEach(function (p) {
+        var soma = p.t.total;
+        for (var i = 0; i < k; i++) {
+          var u = 1 - rnd(), v = rnd();
+          soma += p.media + p.dp * Math.sqrt(-2 * Math.log(u)) * Math.cos(2 * Math.PI * v);
+        }
+        if (soma > melhor + 1e-9) { melhor = soma; lideres = [p]; } else if (Math.abs(soma - melhor) <= 1e-9) lideres.push(p);
+      });
+      lideres.forEach(function (p) { p.vitorias += 1 / lideres.length; });
+    }
+    perfis.forEach(function (p) { p.pct = (p.vitorias / N) * 100; });
+    var ordem = perfis.slice().sort(function (a, b) { return b.pct - a.pct; });
+    el("chance-info").textContent = encerrado ? "Disputa encerrada" : "Faltam " + k + (k === 1 ? " rodada" : " rodadas");
+    el("chance-barra").setAttribute("aria-label", ordem.map(function (p) { return p.t.nome + " " + Math.round(p.pct) + "%"; }).join(", "));
+    el("chance-barra").innerHTML = ordem.map(function (p) {
+      return '<div style="flex:' + Math.max(p.pct, 0.001) + " 1 0;background:" + CORES[p.t.id] + '">' + (p.pct >= 9 ? Math.round(p.pct) + "%" : "") + "</div>";
+    }).join("");
+    el("chance-lista").innerHTML = ordem.map(function (p) {
+      var txt = p.pct >= 99.5 ? "Praticamente garantido" : p.pct < 0.5 ? "Só um milagre" : "Média de " + fmtCurto(p.media) + " pts por rodada";
+      return '<div><b><i style="background:' + CORES[p.t.id] + '"></i>' + esc(p.t.nome) + "</b><strong>" +
+        (p.pct < 1 && p.pct > 0 ? "&lt;1" : Math.round(p.pct)) + "%</strong><small>" + txt + "</small></div>";
+    }).join("");
+  }
+
+  var rodadaSel = null, timeSel = null;
+  function renderRodada(d, liderId) {
+    var sec = el("sec-rodada");
+    var esc_ = d.escalacoes || {};
+    var rods = Object.keys(esc_).map(Number).sort(function (a, b) { return a - b; });
+    sec.hidden = !rods.length;
+    if (!rods.length) return;
+    if (rodadaSel == null || rods.indexOf(rodadaSel) < 0) rodadaSel = rods[rods.length - 1];
+    if (timeSel == null) timeSel = String(liderId);
+
+    el("rodada-chips").innerHTML = rods.map(function (r) {
+      var vivo = esc_[r] && Object.values(esc_[r]).some(function (x) { return x.ao_vivo; });
+      var extra = r < d.rodada_inicio ? " <small>não conta</small>" : (vivo ? " <small>ao vivo</small>" : "");
+      return '<button type="button" class="chip" data-r="' + r + '" aria-pressed="' + (r === rodadaSel) + '">Rodada ' + r + extra + "</button>";
+    }).join("");
+    el("rodada-chips").onclick = function (ev) {
+      var b = ev.target.closest("[data-r]"); if (!b) return;
+      rodadaSel = Number(b.dataset.r); renderRodada(d, liderId);
+    };
+
+    var dados = esc_[rodadaSel] || {};
+    var aoVivo = Object.values(dados).some(function (x) { return x.ao_vivo; });
+    el("rodada-titulo").textContent = aoVivo ? "Rodada " + rodadaSel + " ao vivo" : "Resumo da rodada " + rodadaSel;
+    el("rodada-info").textContent = rodadaSel < d.rodada_inicio ? "Aquecimento, não conta na disputa" : (aoVivo ? "Parcial, muda a cada 20 min" : "Pontos oficiais");
+
+    // Prêmios
+    var ids = Object.keys(dados);
+    var porPontos = ids.map(function (id) { return { id: id, v: dados[id].pontos || 0 }; }).sort(function (a, b) { return b.v - a.v; });
+    var caps = [], jogs = [];
+    ids.forEach(function (id) {
+      (dados[id].atletas || []).forEach(function (a) {
+        if (a.pts == null) return;
+        jogs.push({ id: id, a: a });
+        if (a.cap) caps.push({ id: id, a: a });
+      });
+    });
+    jogs.sort(function (x, y) { return y.a.pts - x.a.pts; });
+    caps.sort(function (x, y) { return x.a.pts - y.a.pts; });
+    var cards = [];
+    if (porPontos.length) {
+      cards.push({ c: "ouro", k: aoVivo ? "Na frente da rodada" : "Rei da rodada", b: nomeTime(d, porPontos[0].id), s: fmt(porPontos[0].v) + " pts" });
+      var ult = porPontos[porPontos.length - 1];
+      if (porPontos.length > 1 && ult.v < porPontos[0].v) cards.push({ c: "ruim", k: aoVivo ? "Lanterna até agora" : "Lanterna da rodada", b: nomeTime(d, ult.id), s: fmt(ult.v) + " pts" });
+    }
+    if (jogs.length) cards.push({ c: "", k: "Craque do trio", b: jogs[0].a.n, s: fmt(jogs[0].a.pts) + " pts · " + esc(nomeTime(d, jogs[0].id)) });
+    if (caps.length > 1) {
+      var pc = caps[0];
+      cards.push({ c: pc.a.pts < 3 ? "ruim" : "", k: pc.a.pts < 3 ? "Capitão que afundou" : "Capitão mais fraco", b: pc.a.n, s: fmt(pc.a.pts) + " pts · " + esc(nomeTime(d, pc.id)) });
+    }
+    el("premios").innerHTML = cards.map(function (c) {
+      return '<div class="premio-card ' + c.c + '"><span class="k">' + c.k + "</span><b>" + esc(c.b) + "</b><span>" + c.s + "</span></div>";
+    }).join("");
+
+    // Abas por time
+    if (!dados[timeSel]) timeSel = ids[0];
+    el("abas").innerHTML = d.times.filter(function (t) { return dados[t.id]; }).map(function (t) {
+      return '<button type="button" role="tab" class="aba" data-t="' + t.id + '" aria-selected="' + (String(t.id) === String(timeSel)) + '"><i style="background:' + CORES[t.id] + '"></i>' + esc(t.nome) + "</button>";
+    }).join("");
+    el("abas").onclick = function (ev) {
+      var b = ev.target.closest("[data-t]"); if (!b) return;
+      timeSel = b.dataset.t; renderRodada(d, liderId);
+    };
+
+    var sel = dados[timeSel] || { atletas: [] };
+    var lista = (sel.atletas || []).slice().sort(function (x, y) { return (x.pos in ORDEM_POS ? ORDEM_POS[x.pos] : 9) - (y.pos in ORDEM_POS ? ORDEM_POS[y.pos] : 9); });
+    el("elenco").innerHTML = lista.map(function (a) {
+      var cl = (d.clubes || {})[a.clube] || {};
+      var ptsTxt = a.pts == null ? "—" : fmt(a.cap ? a.pts * 1.5 : a.pts);
+      var cls = a.pts == null || a.pts === 0 ? "zero" : a.pts < 0 ? "neg" : "";
+      var sub = (cl.nome || "") + (a.cap && a.pts != null ? " · " + fmt(a.pts) + " x1,5 de capitão" : "") + (a.pts == null && aoVivo ? " · ainda não jogou" : "");
+      return '<li><span class="pos">' + (POS[a.pos] || "") + "</span>" + (cl.escudo ? '<img src="' + esc(cl.escudo) + '" alt="' + esc(cl.sigla || "") + '" loading="lazy">' : "<span></span>") +
+        '<span class="jog">' + esc(a.n) + (a.cap ? '<span class="cap" title="Capitão">C</span>' : "") + "<small>" + esc(sub) + "</small></span>" +
+        '<span class="pts ' + cls + '">' + ptsTxt + "</span></li>";
+    }).join("");
+    el("elenco-total").innerHTML = "<span>" + (aoVivo ? "Parcial" : "Total na rodada") + "</span><strong>" + fmt(sel.pontos) + "</strong>";
   }
 
   function renderTabela(d, aoVivo) {
@@ -349,8 +569,10 @@
     var ultima = Math.min(d.ultima_fechada, fim);
     if (ultima < ini) {
       box.innerHTML = '<div class="vazio">O gráfico aparece depois que a rodada 29 terminar.</div>';
+      el("dica-uso").hidden = true;
       return;
     }
+    el("dica-uso").hidden = false;
 
     // Séries acumuladas: ponto 0 antes da rodada inicial
     var series = d.times.map(function (t) {
