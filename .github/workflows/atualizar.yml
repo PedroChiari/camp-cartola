@@ -4,6 +4,9 @@ on:
   schedule:
     - cron: "*/20 * * * *"   # a cada 20 minutos (horário UTC)
   workflow_dispatch:          # botão "Run workflow" para rodar na mão
+  push:
+    branches: [main]
+    paths-ignore: [data.json]
 
 permissions:
   contents: write
