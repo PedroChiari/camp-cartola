@@ -1,0 +1,452 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Camp da Camisa</title>
+<meta name="description" content="Disputa de Cartola entre ApostaFutebolClube, Alpaca Alvinegra e Ambafc. Rodadas 29 a 38, quem somar mais leva a camisa.">
+<meta property="og:type" content="website">
+<meta property="og:title" content="Camp da Camisa · Cartola">
+<meta property="og:description" content="ApostaFutebolClube x Alpaca Alvinegra x Ambafc. Rodadas 29 a 38, quem somar mais leva a camisa. Veja quem está na frente.">
+<meta property="og:image" content="https://pedrochiari.github.io/camp-cartola/og.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta name="theme-color" content="#0B1F16">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Cpath d='M22 6 L10 12 L3 26 L13 31 L16 25 L16 58 L48 58 L48 25 L51 31 L61 26 L54 12 L42 6 C40 11 36 13 32 13 C28 13 24 11 22 6 Z' fill='%23F2C14E'/%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Big+Shoulders+Display:wght@600;800;900&family=Barlow:wght@400;500;600&family=Barlow+Condensed:wght@500;600;700&display=swap">
+<style>
+  :root {
+    color-scheme: dark;
+    --grama-1: #0B1F16;
+    --grama-2: #10271C;
+    --grama-3: #163424;
+    --cal: #EEF2E6;
+    --cal-2: #B7C6B9;
+    --cal-3: #7F9585;
+    --linha: rgba(238, 242, 230, .12);
+    --ouro: #F2C14E;
+    --ouro-escuro: #8A6A1C;
+    --display: "Big Shoulders Display", "Arial Narrow", Impact, sans-serif;
+    --corpo: "Barlow", "Segoe UI", system-ui, sans-serif;
+    --rotulo: "Barlow Condensed", "Arial Narrow", "Segoe UI", sans-serif;
+  }
+  * { box-sizing: border-box; }
+  html { background: var(--grama-1); }
+  body {
+    margin: 0;
+    min-height: 100vh;
+    color: var(--cal);
+    font: 400 16px/1.5 var(--corpo);
+    background:
+      radial-gradient(120% 60% at 50% -10%, rgba(242, 193, 78, .10), transparent 60%),
+      repeating-linear-gradient(90deg, var(--grama-1) 0 90px, #0D2319 90px 180px);
+    padding-inline: 16px;
+    -webkit-font-smoothing: antialiased;
+  }
+  .wrap { max-width: 1040px; margin: 0 auto; padding-block: 28px 64px; display: grid; grid-template-columns: minmax(0, 1fr); gap: 40px; }
+  .wrap > * { min-width: 0; }
+
+  /* Topo */
+  header.topo { display: flex; flex-wrap: wrap; align-items: flex-end; justify-content: space-between; gap: 16px 24px; }
+  .marca { display: grid; gap: 2px; }
+  .marca small { font: 600 13px/1 var(--rotulo); letter-spacing: .18em; text-transform: uppercase; color: var(--cal-3); }
+  .marca h1 { margin: 0; font: 900 clamp(40px, 7vw, 64px)/.9 var(--display); letter-spacing: .01em; text-transform: uppercase; text-wrap: balance; }
+  .marca h1 span { color: var(--ouro); }
+  .status { display: inline-flex; align-items: center; gap: 10px; padding: 8px 14px; border: 1px solid var(--linha); border-radius: 999px; font: 600 15px/1 var(--rotulo); letter-spacing: .06em; text-transform: uppercase; color: var(--cal-2); background: rgba(11, 31, 22, .7); }
+  .status i { width: 9px; height: 9px; border-radius: 50%; background: var(--cal-3); }
+  .status.vivo i { background: #FF4D4D; box-shadow: 0 0 0 0 rgba(255, 77, 77, .6); animation: pulso 1.6s infinite; }
+  .status.aberto i { background: #5BD08A; }
+  .status.fim i { background: var(--ouro); }
+  @keyframes pulso { 70% { box-shadow: 0 0 0 10px rgba(255, 77, 77, 0); } 100% { box-shadow: 0 0 0 0 rgba(255, 77, 77, 0); } }
+
+  /* Trilho de rodadas */
+  .trilho { display: grid; gap: 10px; }
+  .trilho-topo { display: flex; justify-content: space-between; gap: 12px; font: 600 14px/1.2 var(--rotulo); letter-spacing: .08em; text-transform: uppercase; color: var(--cal-3); }
+  .trilho-topo b { color: var(--cal); font-weight: 700; }
+  .rodadas { display: grid; grid-template-columns: repeat(10, 1fr); gap: 4px; }
+  .rodadas div { height: 30px; display: grid; place-items: center; border-radius: 4px; background: var(--grama-3); font: 700 13px/1 var(--rotulo); color: var(--cal-3); font-variant-numeric: tabular-nums; }
+  .rodadas .feita { background: var(--cal); color: var(--grama-1); }
+  .rodadas .agora { background: transparent; outline: 2px solid var(--ouro); outline-offset: -2px; color: var(--ouro); }
+
+  /* Líder */
+  .lider { position: relative; display: grid; grid-template-columns: auto 1fr auto; align-items: center; gap: 20px 32px; padding: 28px clamp(20px, 4vw, 40px); border-radius: 18px; background: linear-gradient(135deg, #1B3B29 0%, var(--grama-2) 55%); border: 1px solid rgba(242, 193, 78, .35); overflow: hidden; }
+  .lider::before { content: ""; position: absolute; right: -60px; top: 50%; width: 260px; height: 260px; transform: translateY(-50%); border: 2px solid var(--linha); border-radius: 50%; pointer-events: none; }
+  .escudo { width: 96px; height: 96px; border-radius: 50%; background: var(--grama-3); display: grid; place-items: center; overflow: hidden; flex: none; }
+  .escudo img { width: 84%; height: 84%; object-fit: contain; }
+  .lider .escudo { width: 120px; height: 120px; box-shadow: 0 0 0 4px var(--grama-1), 0 0 0 6px var(--ouro); }
+  .lider-info { display: grid; gap: 4px; min-width: 0; }
+  .selo { justify-self: start; display: inline-flex; align-items: center; gap: 8px; padding: 5px 10px; border-radius: 4px; background: var(--ouro); color: #2A1F05; font: 700 13px/1 var(--rotulo); letter-spacing: .14em; text-transform: uppercase; }
+  .selo.empate { background: var(--cal-2); }
+  .lider-info h2 { margin: 6px 0 0; font: 800 clamp(30px, 5vw, 48px)/1 var(--display); text-transform: uppercase; overflow-wrap: anywhere; }
+  .lider-info p { margin: 0; color: var(--cal-2); font: 500 16px/1.3 var(--rotulo); letter-spacing: .04em; }
+  .placar { text-align: right; position: relative; }
+  .placar .num { font: 900 clamp(56px, 10vw, 104px)/.85 var(--display); color: var(--ouro); font-variant-numeric: tabular-nums; letter-spacing: -.01em; }
+  .placar .num small { font-size: .42em; }
+  .placar .un { font: 600 13px/1 var(--rotulo); letter-spacing: .18em; text-transform: uppercase; color: var(--cal-3); margin-top: 8px; }
+  .parcial-chip { display: inline-block; margin-top: 10px; padding: 4px 8px; border-radius: 4px; background: rgba(255, 77, 77, .14); color: #FF9C9C; font: 600 13px/1 var(--rotulo); letter-spacing: .06em; text-transform: uppercase; font-variant-numeric: tabular-nums; }
+
+  /* Perseguidores */
+  .secao-titulo { display: flex; align-items: baseline; justify-content: space-between; gap: 12px; margin: 0 0 16px; }
+  .secao-titulo h3 { margin: 0; font: 800 28px/1 var(--display); text-transform: uppercase; letter-spacing: .02em; }
+  .secao-titulo span { color: var(--cal-3); font: 500 14px/1.3 var(--rotulo); letter-spacing: .06em; text-transform: uppercase; text-align: right; }
+  .caca { display: grid; grid-template-columns: repeat(auto-fit, minmax(290px, 1fr)); gap: 16px; }
+  .perseguidor { display: grid; gap: 18px; padding: 22px; border-radius: 14px; background: var(--grama-2); border: 1px solid var(--linha); }
+  .p-topo { display: flex; align-items: center; gap: 14px; min-width: 0; }
+  .p-topo .escudo { width: 56px; height: 56px; }
+  .p-nome { min-width: 0; }
+  .p-nome b { display: block; font: 800 24px/1 var(--display); text-transform: uppercase; overflow-wrap: anywhere; }
+  .p-nome span { color: var(--cal-3); font: 500 14px/1.3 var(--rotulo); letter-spacing: .04em; }
+  .posicao { margin-left: auto; font: 900 40px/1 var(--display); color: var(--cal-3); }
+  .falta { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+  .falta div { display: grid; gap: 4px; }
+  .falta dt, .k { font: 600 12px/1.2 var(--rotulo); letter-spacing: .14em; text-transform: uppercase; color: var(--cal-3); }
+  .falta dd { margin: 0; font: 800 36px/1 var(--display); font-variant-numeric: tabular-nums; }
+  .falta dd small { font-size: .5em; color: var(--cal-2); font-weight: 600; }
+  .falta .quente { color: #FF9A62; }
+  .barra { display: grid; gap: 6px; }
+  .barra-pista { position: relative; height: 10px; border-radius: 5px; background: var(--grama-3); }
+  .barra-pista .fill { position: absolute; inset: 0 auto 0 0; border-radius: 5px; }
+  .barra-pista .alvo { position: absolute; top: -4px; bottom: -4px; right: 0; width: 2px; background: var(--ouro); }
+  .barra-leg { display: flex; justify-content: space-between; font: 500 13px/1.2 var(--rotulo); color: var(--cal-3); font-variant-numeric: tabular-nums; }
+  .frase { margin: 0; color: var(--cal-2); font-size: 15px; }
+  .frase b { color: var(--cal); }
+
+  /* Gráfico */
+  .painel { padding: 22px; border-radius: 14px; background: var(--grama-2); border: 1px solid var(--linha); }
+  .legenda { display: flex; flex-wrap: wrap; gap: 8px 18px; margin-bottom: 12px; font: 600 14px/1.2 var(--rotulo); letter-spacing: .04em; color: var(--cal-2); }
+  .legenda span { display: inline-flex; align-items: center; gap: 8px; }
+  .legenda i { width: 14px; height: 3px; border-radius: 2px; }
+  .grafico { position: relative; }
+  .grafico svg { display: block; width: 100%; height: auto; overflow: visible; touch-action: pan-y; }
+  .grafico text { font-family: var(--rotulo); font-size: 12px; fill: var(--cal-3); }
+  .dica { position: absolute; pointer-events: none; min-width: 170px; padding: 10px 12px; border-radius: 8px; background: #0A1A12; border: 1px solid var(--linha); box-shadow: 0 8px 24px rgba(0,0,0,.4); font: 500 14px/1.4 var(--rotulo); transform: translate(-50%, calc(-100% - 12px)); }
+  .dica b { display: block; margin-bottom: 4px; font-weight: 700; letter-spacing: .08em; text-transform: uppercase; color: var(--cal-3); font-size: 12px; }
+  .dica div { display: flex; align-items: center; gap: 8px; justify-content: space-between; font-variant-numeric: tabular-nums; }
+  .dica div span { display: inline-flex; align-items: center; gap: 6px; color: var(--cal-2); }
+  .dica i { width: 8px; height: 8px; border-radius: 50%; }
+  .vazio { padding: 32px 12px; text-align: center; color: var(--cal-3); font: 500 16px/1.4 var(--rotulo); letter-spacing: .04em; }
+
+  /* Tabela */
+  .tabela-wrap { overflow-x: auto; }
+  table { width: 100%; border-collapse: collapse; font-variant-numeric: tabular-nums; min-width: 640px; }
+  th, td { padding: 10px 8px; text-align: center; border-bottom: 1px solid var(--linha); white-space: nowrap; }
+  thead th { font: 600 12px/1 var(--rotulo); letter-spacing: .12em; text-transform: uppercase; color: var(--cal-3); }
+  tbody th { text-align: left; font: 700 16px/1.1 var(--rotulo); letter-spacing: .02em; }
+  tbody th .ponto { display: inline-block; width: 8px; height: 8px; border-radius: 50%; margin-right: 8px; vertical-align: middle; }
+  td { font: 500 15px/1 var(--rotulo); color: var(--cal-2); }
+  td.melhor { color: var(--ouro); font-weight: 700; }
+  td.futuro { color: rgba(127, 149, 133, .45); }
+  td.total, th.total { font: 800 20px/1 var(--display); color: var(--cal); }
+  thead th.total { font: 600 12px/1 var(--rotulo); color: var(--cal-3); }
+  .nota { margin: 12px 0 0; color: var(--cal-3); font-size: 13px; }
+  .nota b { color: var(--ouro); font-weight: 600; }
+  .dica-uso { margin: 10px 0 0; color: var(--cal-3); font-size: 13px; }
+  .regra { margin: -24px 0 0; color: var(--cal-2); font-size: 15px; }
+  .so-celular { display: none; }
+  @media (max-width: 700px) { .so-celular { display: inline; } }
+
+  /* Camisa */
+  .premio { display: grid; grid-template-columns: auto 1fr; align-items: center; gap: 20px; padding: 20px 22px; border-radius: 14px; border: 1px dashed rgba(242, 193, 78, .45); }
+  .premio svg { width: 64px; height: 64px; }
+  .premio h4 { margin: 0; font: 800 24px/1 var(--display); text-transform: uppercase; color: var(--ouro); }
+  .premio p { margin: 4px 0 0; color: var(--cal-2); }
+
+  footer { display: flex; flex-wrap: wrap; justify-content: space-between; gap: 8px; color: var(--cal-3); font: 500 13px/1.4 var(--rotulo); letter-spacing: .04em; }
+
+  .erro { padding: 20px; border-radius: 12px; background: rgba(255, 77, 77, .1); color: #FFB3B3; }
+
+  @media (max-width: 640px) {
+    .lider { grid-template-columns: auto 1fr; }
+    .lider .escudo { width: 84px; height: 84px; }
+    .placar { grid-column: 1 / -1; text-align: left; }
+    .secao-titulo { flex-direction: column; align-items: flex-start; }
+    .secao-titulo span { text-align: left; }
+    .rodadas div { height: 26px; font-size: 11px; }
+    .falta dd { font-size: 30px; }
+    .status { font-size: 13px; }
+  }
+  @media (prefers-reduced-motion: reduce) { * { animation: none !important; transition: none !important; } }
+  :focus-visible { outline: 2px solid var(--ouro); outline-offset: 2px; }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header class="topo">
+    <div class="marca">
+      <small>Cartola FC · Brasileirão 2026</small>
+      <h1>Camp da <span>Camisa</span></h1>
+    </div>
+    <div id="status" class="status"><i></i><span>Carregando…</span></div>
+  </header>
+
+  <section class="trilho" aria-label="Rodadas da disputa">
+    <div class="trilho-topo"><span>Rodadas 29 a 38</span><span id="trilho-info"></span></div>
+    <div class="rodadas" id="rodadas"></div>
+  </section>
+
+  <section id="lider" class="lider" aria-live="polite"></section>
+  <p class="regra">Vale a soma dos pontos do Cartola de cada um, da rodada 29 até a 38. O site atualiza sozinho.</p>
+
+  <section>
+    <div class="secao-titulo"><h3>Quem está na caça</h3><span id="caca-info"></span></div>
+    <div class="caca" id="caca"></div>
+  </section>
+
+  <section>
+    <div class="secao-titulo"><h3>A corrida</h3><span>Pontos acumulados na disputa</span></div>
+    <div class="painel">
+      <div class="legenda" id="legenda"></div>
+      <div class="grafico" id="grafico"></div>
+      <p class="dica-uso">Toque ou passe o mouse no gráfico para ver o placar depois de cada rodada.</p>
+    </div>
+  </section>
+
+  <section>
+    <div class="secao-titulo"><h3>Rodada a rodada</h3><span>Pontos oficiais do Cartola</span></div>
+    <div class="painel">
+      <div class="tabela-wrap"><table id="tabela"></table></div>
+      <p class="nota">Em <b>dourado</b>, quem fez mais pontos na rodada.<span class="so-celular"> Arraste a tabela para o lado para ver todas.</span></p>
+    </div>
+  </section>
+
+  <section class="premio">
+    <svg viewBox="0 0 64 64" aria-hidden="true"><path d="M22 6 L10 12 L3 26 L13 31 L16 25 L16 58 L48 58 L48 25 L51 31 L61 26 L54 12 L42 6 C40 11 36 13 32 13 C28 13 24 11 22 6 Z" fill="#F2C14E" stroke="#8A6A1C" stroke-width="2" stroke-linejoin="round"/><path d="M22 6 C24 11 28 13 32 13 C36 13 40 11 42 6" fill="none" stroke="#8A6A1C" stroke-width="2"/></svg>
+    <div>
+      <h4>Vale uma camisa do time</h4>
+      <p>Quem somar mais pontos da rodada 29 até a 38 ganha a camisa oficial do time do coração, paga pelos outros dois.</p>
+    </div>
+  </section>
+
+  <footer>
+    <span id="atualizado"></span>
+    <span>Dados: API pública do Cartola FC · atualiza a cada 20 min</span>
+  </footer>
+</div>
+
+<script>
+(function () {
+  "use strict";
+  // Cor fixa por time (segue o time, nunca a posição)
+  var CORES = { 2266880: "#D9621F", 595076: "#2E8BD0", 26866238: "#D24F8E" };
+  var fmt = function (n) { return (n || 0).toLocaleString("pt-BR", { minimumFractionDigits: 2, maximumFractionDigits: 2 }); };
+  var fmtCurto = function (n) { return (n || 0).toLocaleString("pt-BR", { maximumFractionDigits: 1 }); };
+  var el = function (id) { return document.getElementById(id); };
+  var esc = function (s) { return String(s == null ? "" : s).replace(/[&<>"']/g, function (c) { return { "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]; }); };
+
+  function escudo(t, cls) {
+    var ini = esc((t.nome || "?").slice(0, 2).toUpperCase());
+    var img = t.escudo ? '<img src="' + esc(t.escudo) + '" alt="" loading="lazy" onerror="this.replaceWith(document.createTextNode(\'' + ini + '\'))">' : ini;
+    return '<div class="escudo ' + (cls || "") + '">' + img + "</div>";
+  }
+
+  function render(d) {
+    var ini = d.rodada_inicio, fim = d.rodada_fim;
+    var fechadas = Math.max(0, Math.min(d.ultima_fechada, fim) - ini + 1);
+    var aoVivo = d.rodada_ao_vivo && d.rodada_ao_vivo >= ini && d.rodada_ao_vivo <= fim ? d.rodada_ao_vivo : null;
+    var restantes = d.fim_de_jogo ? 0 : Math.max(0, fim - Math.max(d.ultima_fechada, ini - 1));
+    var encerrado = d.fim_de_jogo || d.ultima_fechada >= fim;
+
+    // Placar considerando parcial ao vivo
+    var times = d.times.map(function (t) {
+      return Object.assign({}, t, { vivo: t.total + (aoVivo && t.parcial != null ? t.parcial : 0) });
+    });
+    times.sort(function (a, b) { return b.vivo - a.vivo; });
+    var lider = times[0];
+    var empatados = times.filter(function (t) { return Math.abs(t.vivo - lider.vivo) < 0.005; });
+
+    // Status
+    var st = el("status"), stTxt;
+    st.className = "status";
+    if (encerrado) { st.classList.add("fim"); stTxt = "Disputa encerrada"; }
+    else if (aoVivo) { st.classList.add("vivo"); stTxt = "Rodada " + aoVivo + " rolando agora"; }
+    else if (d.status_mercado === 1) {
+      st.classList.add("aberto");
+      stTxt = (d.fechamento ? "Escale até " + new Date(d.fechamento * 1000).toLocaleString("pt-BR", { weekday: "short", day: "2-digit", month: "2-digit", hour: "2-digit", minute: "2-digit" }) : "Mercado aberto");
+    } else stTxt = "Cartola em manutenção";
+    st.querySelector("span").textContent = stTxt;
+
+    // Trilho
+    var h = "";
+    for (var r = ini; r <= fim; r++) {
+      var c = r <= d.ultima_fechada ? "feita" : (r === aoVivo || (!aoVivo && r === d.rodada_atual && !encerrado) ? "agora" : "");
+      h += '<div class="' + c + '" title="Rodada ' + r + '">' + r + "</div>";
+    }
+    el("rodadas").innerHTML = h;
+    el("trilho-info").innerHTML = encerrado ? "<b>Fim</b> da disputa" : "<b>" + fechadas + "</b> de 10 jogadas · <b>" + restantes + "</b> restantes";
+
+    // Líder
+    var parcialLider = aoVivo && lider.parcial != null ? '<span class="parcial-chip">+' + fmt(lider.parcial) + " pontos da rodada rolando</span>" : "";
+    var selo;
+    if (fechadas === 0 && !aoVivo) selo = '<span class="selo empate">Todos zerados · começa na 29</span>';
+    else if (empatados.length > 1) selo = '<span class="selo empate">Empate na ponta</span>';
+    else if (encerrado) selo = '<span class="selo">Campeão · leva a camisa</span>';
+    else selo = '<span class="selo">1º lugar</span>';
+    var valor = fmt(lider.vivo).split(",");
+    el("lider").innerHTML =
+      escudo(lider) +
+      '<div class="lider-info">' + selo + "<h2>" + esc(lider.nome) + "</h2><p>" + esc(lider.cartola) + "</p></div>" +
+      '<div class="placar"><div class="num">' + valor[0] + "<small>," + valor[1] + '</small></div><div class="un">pontos na disputa</div>' + parcialLider + "</div>";
+
+    // Caça
+    el("caca-info").textContent = restantes > 0 ? restantes + (restantes === 1 ? " rodada" : " rodadas") + " para virar" : (encerrado ? "Placar final" : "");
+    el("caca").innerHTML = times.slice(1).map(function (t, i) {
+      var diff = lider.vivo - t.vivo;
+      var porRodada = restantes > 0 ? diff / restantes : null;
+      var pct = lider.vivo > 0 ? Math.max(0, Math.min(100, (t.vivo / lider.vivo) * 100)) : 100;
+      var frase;
+      if (diff < 0.005) frase = "Empatado com o líder. Qualquer ponto a mais assume a ponta.";
+      else if (encerrado) frase = "Terminou <b>" + fmt(diff) + "</b> pontos atrás.";
+      else frase = "Para passar, precisa somar <b>" + fmt(diff + 0.01) + "</b> pontos a mais que o " + esc(lider.nome) + " até a rodada " + fim + ". Dá uns <b>" + fmtCurto(porRodada) + "</b> a mais por rodada.";
+      return '<article class="perseguidor">' +
+        '<div class="p-topo">' + escudo(t) + '<div class="p-nome"><b>' + esc(t.nome) + "</b><span>" + esc(t.cartola) + "</span></div><div class=\"posicao\">" + (i + 2) + "º</div></div>" +
+        '<dl class="falta"><div><dt>Atrás do líder</dt><dd class="' + (diff > 0 ? "quente" : "") + '">' + (diff > 0 ? "−" : "") + fmt(diff) + "</dd></div>" +
+        "<div><dt>Precisa por rodada</dt><dd>" + (porRodada != null && diff > 0 ? "+" + fmtCurto(porRodada) + "<small> pts</small>" : "—") + "</dd></div></dl>" +
+        '<div class="barra"><div class="barra-pista"><div class="fill" style="width:' + pct + "%;background:" + (CORES[t.id] || "#888") + '"></div><div class="alvo"></div></div>' +
+        '<div class="barra-leg"><span>' + fmt(t.vivo) + " pts</span><span>líder " + fmt(lider.vivo) + "</span></div></div>" +
+        '<p class="frase">' + frase + "</p></article>";
+    }).join("");
+
+    renderGrafico(d, aoVivo);
+    renderTabela(d, aoVivo);
+
+    var at = d.atualizado_em ? new Date(d.atualizado_em) : null;
+    el("atualizado").textContent = at ? "Números atualizados em " + at.toLocaleString("pt-BR", { day: "2-digit", month: "2-digit", hour: "2-digit", minute: "2-digit" }) : "";
+  }
+
+  function renderTabela(d, aoVivo) {
+    var ini = d.rodada_inicio, fim = d.rodada_fim, r;
+    var melhor = {};
+    for (r = ini; r <= fim; r++) {
+      var vals = d.times.map(function (t) { return t.rodadas[r]; }).filter(function (v) { return v != null; });
+      if (vals.length) melhor[r] = Math.max.apply(null, vals);
+    }
+    var h = "<thead><tr><th scope=\"col\" style=\"text-align:left\">Time</th>";
+    for (r = ini; r <= fim; r++) h += '<th scope="col">R' + r + "</th>";
+    h += '<th scope="col" class="total">Total</th></tr></thead><tbody>';
+    var ordem = d.times.slice().sort(function (a, b) { return b.total - a.total; });
+    ordem.forEach(function (t) {
+      h += '<tr><th scope="row"><span class="ponto" style="background:' + (CORES[t.id] || "#888") + '"></span>' + esc(t.nome) + "</th>";
+      for (r = ini; r <= fim; r++) {
+        var v = t.rodadas[r];
+        if (v != null) h += '<td class="' + (v === melhor[r] && v > 0 ? "melhor" : "") + '">' + fmt(v) + "</td>";
+        else if (r === aoVivo && t.parcial != null) h += '<td title="Parcial ao vivo" style="color:#FF9C9C">' + fmt(t.parcial) + "*</td>";
+        else h += '<td class="futuro">—</td>';
+      }
+      h += '<td class="total">' + fmt(t.total) + "</td></tr>";
+    });
+    el("tabela").innerHTML = h + "</tbody>";
+  }
+
+  function renderGrafico(d, aoVivo) {
+    var box = el("grafico");
+    var ini = d.rodada_inicio, fim = d.rodada_fim;
+    el("legenda").innerHTML = d.times.map(function (t) {
+      return '<span><i style="background:' + (CORES[t.id] || "#888") + '"></i>' + esc(t.nome) + "</span>";
+    }).join("");
+
+    var ultima = Math.min(d.ultima_fechada, fim);
+    if (ultima < ini) {
+      box.innerHTML = '<div class="vazio">O gráfico aparece depois que a rodada 29 terminar.</div>';
+      return;
+    }
+
+    // Séries acumuladas: ponto 0 antes da rodada inicial
+    var series = d.times.map(function (t) {
+      var acc = 0, pts = [{ r: ini - 1, v: 0 }];
+      for (var r = ini; r <= ultima; r++) { acc += t.rodadas[r] || 0; pts.push({ r: r, v: acc }); }
+      return { t: t, pts: pts };
+    });
+    var maxV = Math.max.apply(null, series.map(function (s) { return s.pts[s.pts.length - 1].v; })) || 1;
+    var passo = niceStep(maxV / 4);
+    var topo = Math.ceil(maxV / passo) * passo;
+
+    var W = Math.max(300, Math.round(box.clientWidth || 900)), estreito = W < 600;
+    var H = estreito ? 240 : 320, m = { t: 16, r: estreito ? 104 : 150, b: 32, l: estreito ? 36 : 48 };
+    var iw = W - m.l - m.r, ih = H - m.t - m.b;
+    var x = function (r) { return m.l + ((r - (ini - 1)) / (fim - (ini - 1))) * iw; };
+    var y = function (v) { return m.t + ih - (v / topo) * ih; };
+
+    var s = '<svg viewBox="0 0 ' + W + " " + H + '" role="img" aria-label="Pontos acumulados por rodada">';
+    for (var v = 0; v <= topo + 0.001; v += passo) {
+      s += '<line x1="' + m.l + '" x2="' + (m.l + iw) + '" y1="' + y(v) + '" y2="' + y(v) + '" stroke="rgba(238,242,230,.08)"/>';
+      s += '<text x="' + (m.l - 8) + '" y="' + (y(v) + 4) + '" text-anchor="end">' + fmtCurto(v) + "</text>";
+    }
+    for (var r = ini - 1; r <= fim; r++) {
+      if (estreito && (r - ini) % 2 !== 1 && r !== ini - 1) continue;
+      s += '<text x="' + x(r) + '" y="' + (H - 8) + '" text-anchor="middle">' + (r === ini - 1 ? "0" : r) + "</text>";
+    }
+    s += '<line id="mira" y1="' + m.t + '" y2="' + (m.t + ih) + '" stroke="rgba(238,242,230,.35)" stroke-dasharray="3 3" visibility="hidden"/>';
+
+    // Rótulos diretos no fim da linha, afastados para não colidir
+    var fins = series.map(function (se) { var p = se.pts[se.pts.length - 1]; return { se: se, y: y(p.v), x: x(p.r) }; });
+    fins.sort(function (a, b) { return a.y - b.y; });
+    for (var i = 1; i < fins.length; i++) if (fins[i].y - fins[i - 1].y < 18) fins[i].y = fins[i - 1].y + 18;
+
+    series.forEach(function (se) {
+      var cor = CORES[se.t.id] || "#888";
+      var dPath = se.pts.map(function (p, i) { return (i ? "L" : "M") + x(p.r).toFixed(1) + " " + y(p.v).toFixed(1); }).join(" ");
+      s += '<path d="' + dPath + '" fill="none" stroke="' + cor + '" stroke-width="2.5" stroke-linejoin="round" stroke-linecap="round"/>';
+      var p = se.pts[se.pts.length - 1];
+      s += '<circle cx="' + x(p.r) + '" cy="' + y(p.v) + '" r="5" fill="' + cor + '" stroke="#10271C" stroke-width="2"/>';
+    });
+    fins.forEach(function (f) {
+      s += '<text x="' + (f.x + 12) + '" y="' + (f.y + 4) + '" style="fill:#EEF2E6;font-weight:600;font-size:13px">' + esc(estreito && f.se.t.nome.length > 12 ? f.se.t.nome.slice(0, 11) + "…" : f.se.t.nome) + "</text>";
+    });
+    s += '<g id="pontos-mira"></g>';
+    s += '<rect x="' + m.l + '" y="' + m.t + '" width="' + iw + '" height="' + ih + '" fill="transparent" id="alvo-mira"/>';
+    s += "</svg>";
+    box.innerHTML = s + '<div class="dica" id="dica" hidden></div>';
+
+    var svg = box.querySelector("svg"), mira = el("mira"), dica = el("dica"), gp = el("pontos-mira");
+    function mover(ev) {
+      var rect = svg.getBoundingClientRect();
+      var px = (ev.clientX - rect.left) * (W / rect.width);
+      var r = Math.round(((px - m.l) / iw) * (fim - (ini - 1)) + (ini - 1));
+      r = Math.max(ini, Math.min(ultima, r));
+      mira.setAttribute("x1", x(r)); mira.setAttribute("x2", x(r)); mira.setAttribute("visibility", "visible");
+      var linhas = series.map(function (se) {
+        var p = se.pts.find(function (q) { return q.r === r; });
+        return { t: se.t, v: p ? p.v : 0, rod: se.t.rodadas[r] || 0 };
+      }).sort(function (a, b) { return b.v - a.v; });
+      gp.innerHTML = linhas.map(function (l) { return '<circle cx="' + x(r) + '" cy="' + y(l.v) + '" r="5" fill="' + CORES[l.t.id] + '" stroke="#10271C" stroke-width="2"/>'; }).join("");
+      dica.innerHTML = "<b>Após a rodada " + r + "</b>" + linhas.map(function (l) {
+        return '<div><span><i style="background:' + CORES[l.t.id] + '"></i>' + esc(l.t.nome) + "</span><strong>" + fmt(l.v) + "</strong></div>";
+      }).join("");
+      dica.hidden = false;
+      dica.style.left = Math.max(90, Math.min(rect.width - 90, (x(r) / W) * rect.width)) + "px";
+      dica.style.top = ((y(linhas[0].v) / H) * rect.height) + "px";
+    }
+    function sair() { mira.setAttribute("visibility", "hidden"); dica.hidden = true; gp.innerHTML = ""; }
+    var alvo = el("alvo-mira");
+    alvo.addEventListener("pointermove", mover);
+    alvo.addEventListener("pointerdown", mover);
+    alvo.addEventListener("pointerleave", sair);
+  }
+
+  function niceStep(raw) {
+    var p = Math.pow(10, Math.floor(Math.log10(raw || 1))), n = raw / p;
+    return (n <= 1 ? 1 : n <= 2 ? 2 : n <= 2.5 ? 2.5 : n <= 5 ? 5 : 10) * p;
+  }
+
+  var ultimoDado = null, tResize;
+  window.addEventListener("resize", function () {
+    clearTimeout(tResize);
+    tResize = setTimeout(function () { if (ultimoDado) render(ultimoDado); }, 150);
+  });
+
+  function carregar() {
+    fetch("data.json?t=" + Date.now(), { cache: "no-store" })
+      .then(function (r) { if (!r.ok) throw new Error(r.status); return r.json(); })
+      .then(function (d) { ultimoDado = d; render(d); })
+      .catch(function () {
+        el("lider").innerHTML = '<div class="erro">Não consegui carregar os pontos agora. Recarregue a página em alguns minutos.</div>';
+      });
+  }
+  carregar();
+  setInterval(carregar, 5 * 60 * 1000);
+})();
+</script>
+</body>
+</html>

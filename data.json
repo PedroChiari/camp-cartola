@@ -1,0 +1,43 @@
+{
+  "atualizado_em": "2026-09-24T23:08:15+00:00",
+  "rodada_inicio": 29,
+  "rodada_fim": 38,
+  "rodada_atual": 29,
+  "ultima_fechada": 28,
+  "rodada_ao_vivo": null,
+  "status_mercado": 1,
+  "fim_de_jogo": false,
+  "fechamento": 1791412140,
+  "times": [
+    {
+      "id": 2266880,
+      "nome": "ApostaFutebolClube",
+      "cartola": "Pedro Chiari",
+      "slug": "apostafutebolclube",
+      "escudo": "https://s2-cartola.glbimg.com/TNllLREpe4fT7E-Mu8Z9-9_Uelc=/https://s3.glbimg.com/v1/AUTH_58d78b787ec34892b5aaa0c7a146155f/cartola_assets_5/escudo/02/24/35/000d30cab3-1b8e-4fe9-96d8-e311ae17950220260211172435",
+      "rodadas": {},
+      "total": 0,
+      "parcial": null
+    },
+    {
+      "id": 595076,
+      "nome": "Alpaca Alvinegra",
+      "cartola": "LOTT",
+      "slug": "alpaca-alvinegra",
+      "escudo": "https://s2.glbimg.com/RXS6bGdFnSMPHd7EVLETLI90FuU=/https://s3.glbimg.com/v1/AUTH_58d78b787ec34892b5aaa0c7a146155f/cartola_svg_108/escudo/45/46/54/00748118e0-7af3-4543-a19e-8e39ae2f894520180411234654",
+      "rodadas": {},
+      "total": 0,
+      "parcial": null
+    },
+    {
+      "id": 26866238,
+      "nome": "Ambafc",
+      "cartola": "Felipe Lopes",
+      "slug": "ambafc",
+      "escudo": "https://s2.glbimg.com/vZiQhvP32N35NWFRIYpzwibavlQ=/https://s3.glbimg.com/v1/AUTH_58d78b787ec34892b5aaa0c7a146155f/cartola_svg_175/escudo/b0/13/45/007f0e893f-a389-4511-80da-a56133f45ab020200812131345",
+      "rodadas": {},
+      "total": 0,
+      "parcial": null
+    }
+  ]
+}
