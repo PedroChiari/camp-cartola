@@ -107,6 +107,16 @@
   .p-nome b { display: block; font: 800 24px/1 var(--display); text-transform: uppercase; overflow-wrap: anywhere; }
   .p-nome span { color: var(--cal-3); font: 500 14px/1.3 var(--rotulo); letter-spacing: .04em; }
   .posicao { margin-left: auto; font: 900 40px/1 var(--display); color: var(--cal-3); }
+  /* Contador do Santos no topo da página */
+  .queda { display: flex; align-items: center; gap: 18px; padding: 14px 20px; border-radius: 14px; border: 1px dashed rgba(255, 138, 138, .5); background: rgba(255, 77, 77, .06); }
+  .queda-num { font: 900 clamp(40px, 6vw, 56px)/1 var(--display); color: #FF8A8A; font-variant-numeric: tabular-nums; min-width: 1.2em; text-align: center; }
+  .queda-txt { display: grid; gap: 3px; min-width: 0; }
+  .queda-txt b { font: 800 20px/1.1 var(--display); text-transform: uppercase; letter-spacing: .02em; }
+  .queda-txt span { color: var(--cal-3); font: 500 13px/1.3 var(--rotulo); letter-spacing: .04em; }
+  .queda svg { width: 34px; height: 34px; margin-left: auto; flex: none; color: #FF8A8A; }
+  @media (max-width: 640px) { .queda svg { display: none; } }
+  /* Zoeira por time: linha dourada embaixo do nome do cartoleiro */
+  .zoeira { display: block; margin-top: 4px; color: var(--ouro); font: 600 13px/1.3 var(--rotulo); letter-spacing: .04em; }
   .falta { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
   .falta div { display: grid; gap: 4px; }
   .falta dt, .k { font: 600 12px/1.2 var(--rotulo); letter-spacing: .14em; text-transform: uppercase; color: var(--cal-3); }
@@ -256,6 +266,12 @@
     </div>
   </header>
 
+  <section class="queda" aria-label="Contagem para o Santos cair">
+    <div class="queda-num" id="queda-num">—</div>
+    <div class="queda-txt"><b id="queda-txt">dias para o Santos cair pra Série B</b><span>Rebaixamento confirmado na 38ª rodada, 02/12. Ambafc, prepara o coração.</span></div>
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 7l6 6 4-4 8 8"/><path d="M15 17h6v-6"/></svg>
+  </section>
+
   <section class="trilho" aria-label="Rodadas da disputa">
     <div class="trilho-topo"><span>Rodadas 29 a 38</span><span id="trilho-info"></span></div>
     <div class="rodadas" id="rodadas"></div>
@@ -370,6 +386,34 @@
     return "Mercado fecha em " + contagem(ms);
   }
 
+  // Zoeira por time, embaixo do nome do cartoleiro. Cada entrada é uma função
+  // porque o contador do Santos muda com o dia. Última rodada do Brasileirão
+  // 2026 (38ª): 02/12/2026 — o rebaixamento se confirma nesse dia.
+  var FIM_BRASILEIRAO = new Date(2026, 11, 2);   // meia-noite do dia: conta dias de calendário
+  function diasParaCair() { return Math.ceil((FIM_BRASILEIRAO - Date.now()) / 86400000); }
+  var ZOEIRA = {
+    595076: function () {            // Alpaca Alvinegra (corintiano)
+      return "Deve mais no banco do que pontua no Cartola";
+    },
+    26866238: function () {          // Ambafc (santista)
+      var dias = diasParaCair();
+      if (dias > 1) return dias + " dias para o Santos cair pra Série B";
+      if (dias === 1) return "Amanhã o Santos cai pra Série B";
+      return "Brasileirão acabou. Cadê o Santos?";
+    }
+  };
+  // Faixa do topo: número grande + frase. Roda na carga e a cada minuto.
+  function renderQueda() {
+    var dias = diasParaCair();
+    if (dias > 1) { el("queda-num").textContent = dias; el("queda-txt").textContent = "dias para o Santos cair pra Série B"; }
+    else if (dias === 1) { el("queda-num").textContent = "1"; el("queda-txt").textContent = "dia para o Santos cair pra Série B"; }
+    else { el("queda-num").textContent = "B"; el("queda-txt").textContent = "Brasileirão acabou. Cadê o Santos?"; }
+  }
+  function zoeira(t) {
+    var f = ZOEIRA[t.id];
+    return f ? '<span class="zoeira">' + esc(f()) + "</span>" : "";
+  }
+
   function render(d) {
     var ini = d.rodada_inicio, fim = d.rodada_fim;
     var fechadas = Math.max(0, Math.min(d.ultima_fechada, fim) - ini + 1);
@@ -417,7 +461,7 @@
     var valor = fmt(lider.vivo).split(",");
     el("lider").innerHTML =
       escudo(lider) +
-      '<div class="lider-info">' + selo + "<h2>" + esc(lider.nome) + "</h2><p>" + esc(lider.cartola) + "</p></div>" +
+      '<div class="lider-info">' + selo + "<h2>" + esc(lider.nome) + "</h2><p>" + esc(lider.cartola) + "</p>" + zoeira(lider) + "</div>" +
       '<div class="placar"><div class="num">' + valor[0] + "<small>," + valor[1] + '</small></div><div class="un">pontos na disputa</div>' + parcialLider + "</div>";
 
     // Caça
@@ -431,7 +475,7 @@
       else if (encerrado) frase = "Terminou <b>" + fmt(diff) + "</b> pontos atrás.";
       else frase = "Para passar, precisa somar <b>" + fmt(diff + 0.01) + "</b> pontos a mais que o " + esc(lider.nome) + " até a rodada " + fim + ". Dá uns <b>" + fmtCurto(porRodada) + "</b> a mais por rodada.";
       return '<article class="perseguidor">' +
-        '<div class="p-topo">' + escudo(t) + '<div class="p-nome"><b>' + esc(t.nome) + "</b><span>" + esc(t.cartola) + "</span></div><div class=\"posicao\">" + (i + 2) + "º</div></div>" +
+        '<div class="p-topo">' + escudo(t) + '<div class="p-nome"><b>' + esc(t.nome) + "</b><span>" + esc(t.cartola) + "</span>" + zoeira(t) + "</div><div class=\"posicao\">" + (i + 2) + "º</div></div>" +
         '<dl class="falta"><div><dt>Atrás do líder</dt><dd class="' + (diff > 0 ? "quente" : "") + '">' + (diff > 0 ? "−" : "") + fmt(diff) + "</dd></div>" +
         "<div><dt>Precisa por rodada</dt><dd>" + (porRodada != null && diff > 0 ? "+" + fmtCurto(porRodada) + "<small> pts</small>" : "—") + "</dd></div></dl>" +
         '<div class="barra"><div class="barra-pista"><div class="fill" style="width:' + pct + "%;background:" + (CORES[t.id] || "#888") + '"></div><div class="alvo"></div></div>' +
@@ -739,9 +783,10 @@
   }
   carregar();
   carregarRobo();
+  renderQueda();
   setInterval(function () { carregar(); carregarRobo(); }, 5 * 60 * 1000);
-  // A contagem regressiva anda sozinha entre uma busca e outra
-  setInterval(function () { if (ultimoDado) render(ultimoDado); }, 60 * 1000);
+  // As contagens regressivas andam sozinhas entre uma busca e outra
+  setInterval(function () { renderQueda(); if (ultimoDado) render(ultimoDado); }, 60 * 1000);
 
   // Botão "Atualizar": rebusca data.json e a checagem do robô. Gira o ícone por
   // pelo menos meio segundo para dar a sensação de que foi atrás dos números.
