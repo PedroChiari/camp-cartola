@@ -59,6 +59,14 @@
   .status.vivo i { background: #FF4D4D; box-shadow: 0 0 0 0 rgba(255, 77, 77, .6); animation: pulso 1.6s infinite; }
   .status.aberto i { background: #5BD08A; }
   .status.fim i { background: var(--ouro); }
+  .acoes { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
+  /* Botão "atualizar": rebusca os números e a última checagem do robô */
+  .atualizar { appearance: none; display: inline-flex; align-items: center; gap: 8px; padding: 8px 14px; border: 1px solid var(--linha); border-radius: 999px; background: transparent; color: var(--cal-2); font: 600 15px/1 var(--rotulo); letter-spacing: .06em; text-transform: uppercase; cursor: pointer; }
+  .atualizar:hover { border-color: rgba(238, 242, 230, .35); color: var(--cal); }
+  .atualizar svg { width: 15px; height: 15px; }
+  .atualizar.girando svg { animation: gira .8s linear infinite; }
+  .atualizar:disabled { cursor: progress; opacity: .7; }
+  @keyframes gira { to { transform: rotate(360deg); } }
   @keyframes pulso { 70% { box-shadow: 0 0 0 10px rgba(255, 77, 77, 0); } 100% { box-shadow: 0 0 0 0 rgba(255, 77, 77, 0); } }
 
   /* Trilho de rodadas */
@@ -165,6 +173,10 @@
   .esc-item .icone { margin-left: auto; flex: none; width: 26px; height: 26px; border-radius: 50%; display: grid; place-items: center; font: 800 15px/1 var(--rotulo); }
   .esc-item .icone.sim { background: rgba(91, 208, 138, .16); }
   .esc-item .icone.nao { background: rgba(255, 180, 92, .16); }
+  /* Faltando menos de 24h para o mercado fechar, quem não escalou fica em vermelho */
+  .esc-item.urgente { border-color: rgba(255, 77, 77, .55); background: rgba(255, 77, 77, .08); }
+  .esc-item.urgente .nao { color: #FF8A8A; }
+  .esc-item.urgente .icone.nao { background: rgba(255, 77, 77, .22); color: #FF8A8A; }
   .escalou .obs { margin: 0; color: var(--cal-3); font-size: 13px; }
 
   /* Chance de título */
@@ -235,7 +247,13 @@
       <small>Cartola FC · Brasileirão 2026</small>
       <h1>Camp da <span>Camisa</span></h1>
     </div>
-    <div id="status" class="status"><i></i><span>Carregando…</span></div>
+    <div class="acoes">
+      <button id="btn-atualizar" class="atualizar" type="button" title="Buscar os números de novo">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 12a9 9 0 1 1-2.6-6.4"/><path d="M21 3v6h-6"/></svg>
+        <span>Atualizar</span>
+      </button>
+      <div id="status" class="status"><i></i><span>Carregando…</span></div>
+    </div>
   </header>
 
   <section class="trilho" aria-label="Rodadas da disputa">
@@ -303,8 +321,8 @@
   </section>
 
   <footer>
-    <span id="atualizado"></span>
-    <span>Dados: API pública do Cartola FC · atualiza a cada 20 min</span>
+    <span><span id="atualizado"></span> <span id="robo"></span></span>
+    <span>Dados: API pública do Cartola FC · robô no GitHub Actions</span>
   </footer>
 </div>
 
@@ -322,6 +340,34 @@
     var ini = esc((t.nome || "?").slice(0, 2).toUpperCase());
     var img = t.escudo ? '<img src="' + esc(t.escudo) + '" alt="" loading="lazy" onerror="this.replaceWith(document.createTextNode(\'' + ini + '\'))">' : ini;
     return '<div class="escudo ' + (cls || "") + '">' + img + "</div>";
+  }
+
+  // Data/hora completa do fechamento do mercado, ex.: "qua., 07/10, 16:29"
+  function dataFechamento(d) {
+    return new Date(d.fechamento * 1000).toLocaleString("pt-BR", { weekday: "short", day: "2-digit", month: "2-digit", hour: "2-digit", minute: "2-digit" });
+  }
+
+  // Quanto falta para o mercado fechar, em milissegundos (negativo = já fechou)
+  function faltaFechar(d) {
+    return d.fechamento ? d.fechamento * 1000 - Date.now() : null;
+  }
+
+  // Texto curto da contagem regressiva: "4 dias", "1 dia e 3h", "2h10", "35 min"
+  function contagem(ms) {
+    var min = Math.floor(ms / 60000), h = Math.floor(min / 60), dias = Math.floor(h / 24);
+    if (dias >= 2) return dias + " dias";
+    if (dias === 1) return "1 dia" + (h % 24 ? " e " + (h % 24) + "h" : "");
+    if (h >= 1) return h + "h" + (min % 60 < 10 ? "0" : "") + (min % 60);
+    return Math.max(min, 0) + " min";
+  }
+
+  // Texto do selo de status com o mercado aberto. Se a hora já passou e o robô
+  // ainda não trouxe a rodada ao vivo, avisa que fechou em vez de mostrar número negativo.
+  function textoFechamento(d) {
+    var ms = faltaFechar(d);
+    if (ms == null) return "Mercado aberto";
+    if (ms <= 0) return "Mercado fechado";
+    return "Mercado fecha em " + contagem(ms);
   }
 
   function render(d) {
@@ -346,7 +392,9 @@
     else if (aoVivo) { st.classList.add("vivo"); stTxt = "Rodada " + aoVivo + " rolando agora"; }
     else if (d.status_mercado === 1) {
       st.classList.add("aberto");
-      stTxt = (d.fechamento ? "Escale até " + new Date(d.fechamento * 1000).toLocaleString("pt-BR", { weekday: "short", day: "2-digit", month: "2-digit", hour: "2-digit", minute: "2-digit" }) : "Mercado aberto");
+      stTxt = textoFechamento(d);
+      // Tooltip com a data completa, já que o selo mostra só a contagem
+      if (d.fechamento) st.title = "Mercado fecha " + dataFechamento(d);
     } else stTxt = "Cartola em manutenção";
     st.querySelector("span").textContent = stTxt;
 
@@ -398,7 +446,26 @@
     renderTabela(d, aoVivo);
 
     var at = d.atualizado_em ? new Date(d.atualizado_em) : null;
-    el("atualizado").textContent = at ? "Números atualizados em " + at.toLocaleString("pt-BR", { day: "2-digit", month: "2-digit", hour: "2-digit", minute: "2-digit" }) : "";
+    el("atualizado").textContent = at ? "Números mudaram em " + at.toLocaleString("pt-BR", { day: "2-digit", month: "2-digit", hour: "2-digit", minute: "2-digit" }) : "";
+  }
+
+  // Última execução do robô (GitHub Actions). O data.json só muda quando os
+  // números mudam, então sem isso parece que o site "parou" entre rodadas.
+  // A API pública do GitHub aceita 60 chamadas/hora por IP sem token; aqui são ~12.
+  function carregarRobo() {
+    return fetch("https://api.github.com/repos/pedrochiari/camp-cartola/actions/workflows/atualizar.yml/runs?per_page=1&status=completed")
+      .then(function (r) { if (!r.ok) throw new Error(r.status); return r.json(); })
+      .then(function (j) {
+        var run = j.workflow_runs && j.workflow_runs[0];
+        if (!run) return;
+        var q = new Date(run.updated_at), hoje = new Date();
+        var mesmoDia = q.toDateString() === hoje.toDateString();
+        var hora = q.toLocaleString("pt-BR", mesmoDia ? { hour: "2-digit", minute: "2-digit" } : { day: "2-digit", month: "2-digit", hour: "2-digit", minute: "2-digit" });
+        el("robo").textContent = run.conclusion === "success"
+          ? "· Robô checou " + (mesmoDia ? "às " : "em ") + hora
+          : "· Robô falhou na última checagem (" + hora + ")";
+      })
+      .catch(function () { el("robo").textContent = ""; });
   }
 
   var POS = { 1: "GOL", 2: "LAT", 3: "ZAG", 4: "MEI", 5: "ATA", 6: "TÉC" };
@@ -412,11 +479,15 @@
     if (!mostrar) return;
     el("escalou-titulo").textContent = "Quem já escalou a " + d.rodada_atual;
     var n = d.times.filter(function (t) { return t.escalou; }).length;
-    el("escalou-info").textContent = n + " de " + d.times.length + " escalados";
+    var ms = faltaFechar(d);
+    var urgente = ms != null && ms > 0 && ms < 24 * 3600 * 1000;   // menos de 24h para fechar
+    el("escalou-info").textContent = n + " de " + d.times.length + " escalados" + (d.fechamento ? " · fecha " + dataFechamento(d) : "");
     el("escalou-lista").innerHTML = d.times.map(function (t) {
       var ok = !!t.escalou;
-      return '<div class="esc-item">' + escudo(t) + '<div style="min-width:0"><b>' + esc(t.nome) + '</b><span class="' + (ok ? "sim" : "nao") + '">' +
-        (ok ? "Já escalou" : "Ainda não escalou") + '</span></div><span class="icone ' + (ok ? "sim" : "nao") + '" aria-hidden="true">' + (ok ? "✓" : "!") + "</span></div>";
+      var cls = ok ? "sim" : "nao";
+      var txt = ok ? "Já escalou" : (urgente ? "Não escalou · fecha em " + contagem(ms) : "Ainda não escalou");
+      return '<div class="esc-item' + (!ok && urgente ? " urgente" : "") + '">' + escudo(t) + '<div style="min-width:0"><b>' + esc(t.nome) + '</b><span class="' + cls + '">' +
+        txt + '</span></div><span class="icone ' + cls + '" aria-hidden="true">' + (ok ? "✓" : "!") + "</span></div>";
     }).join("");
   }
 
@@ -659,7 +730,7 @@
   });
 
   function carregar() {
-    fetch("data.json?t=" + Date.now(), { cache: "no-store" })
+    return fetch("data.json?t=" + Date.now(), { cache: "no-store" })
       .then(function (r) { if (!r.ok) throw new Error(r.status); return r.json(); })
       .then(function (d) { ultimoDado = d; render(d); })
       .catch(function () {
@@ -667,7 +738,24 @@
       });
   }
   carregar();
-  setInterval(carregar, 5 * 60 * 1000);
+  carregarRobo();
+  setInterval(function () { carregar(); carregarRobo(); }, 5 * 60 * 1000);
+  // A contagem regressiva anda sozinha entre uma busca e outra
+  setInterval(function () { if (ultimoDado) render(ultimoDado); }, 60 * 1000);
+
+  // Botão "Atualizar": rebusca data.json e a checagem do robô. Gira o ícone por
+  // pelo menos meio segundo para dar a sensação de que foi atrás dos números.
+  var btn = el("btn-atualizar"), rotuloBtn = btn.querySelector("span");
+  btn.addEventListener("click", function () {
+    if (btn.disabled) return;
+    btn.disabled = true; btn.classList.add("girando"); rotuloBtn.textContent = "Buscando…";
+    var espera = new Promise(function (ok) { setTimeout(ok, 600); });
+    Promise.all([carregar(), carregarRobo(), espera]).then(function () {
+      btn.classList.remove("girando"); btn.disabled = false;
+      rotuloBtn.textContent = "Atualizado " + new Date().toLocaleTimeString("pt-BR", { hour: "2-digit", minute: "2-digit" });
+      setTimeout(function () { rotuloBtn.textContent = "Atualizar"; }, 4000);
+    });
+  });
 })();
 </script>
 </body>
