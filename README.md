@@ -37,6 +37,10 @@ o navegador canta a frase com a voz do sistema por cima de um batuque gerado na 
 Para usar um áudio de verdade, basta colocar o `arere.mp3` na raiz e dar push.
 Com o arquivo no lugar, o site tenta tocar sozinho ao abrir; como os navegadores bloqueiam som
 automático, na prática ele toca no primeiro clique ou toque do visitante em qualquer ponto da página.
+Além disso, ao abrir o site (uma vez por sessão do navegador) aparece uma janela com o player oficial da
+ESPN (o "syndicated player", feito para ser embutido) com o clipe da torcida cantando o Arerê; o visitante dá o
+play e o som já vem ligado. O vídeo fica nos servidores da ESPN, o site só embute o player. O botão **Vídeo**
+reabre a janela. Esse player não aceita autoplay nem tempo inicial por parâmetro.
 
 ## Mudar times ou rodadas
 
