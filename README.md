@@ -29,6 +29,13 @@ os titulares e o capitão valendo 1,5x. O valor oficial entra quando a rodada te
 
 O site fica em `https://PedroChiari.github.io/camp-cartola/`.
 
+## Faixas de zoeira (Santos e Corinthians)
+
+Os dois contadores usam a mesma data, `FIM_BRASILEIRAO` no `index.html` (última rodada, 02/12/2026).
+O botão **Arerê** toca `arere.mp3` se esse arquivo existir na raiz do repositório; sem o arquivo,
+o navegador canta a frase com a voz do sistema por cima de um batuque gerado na hora.
+Para usar um áudio de verdade, basta colocar o `arere.mp3` na raiz e dar push.
+
 ## Mudar times ou rodadas
 
 Edite `TIMES`, `RODADA_INICIO` e `RODADA_FIM` no topo de `scripts/update.py`. O ID de um time sai de

@@ -115,6 +115,14 @@
   .queda-txt span { color: var(--cal-3); font: 500 13px/1.3 var(--rotulo); letter-spacing: .04em; }
   .queda svg { width: 34px; height: 34px; margin-left: auto; flex: none; color: #FF8A8A; }
   @media (max-width: 640px) { .queda svg { display: none; } }
+  /* 06/11: segunda faixa, do Corinthians, em preto e branco (cores do clube) */
+  .queda.cor { border-color: rgba(238, 242, 230, .4); background: rgba(238, 242, 230, .05); }
+  .queda.cor .queda-num { color: var(--cal); }
+  .arere { margin-left: auto; flex: none; appearance: none; display: inline-flex; align-items: center; gap: 8px; padding: 8px 14px; border: 1px solid rgba(238, 242, 230, .4); border-radius: 999px; background: transparent; color: var(--cal); font: 600 15px/1 var(--rotulo); letter-spacing: .06em; text-transform: uppercase; cursor: pointer; }
+  .arere:hover { background: rgba(238, 242, 230, .1); }
+  .arere svg { width: 15px; height: 15px; }
+  .arere.tocando { background: var(--cal); color: var(--grama-1); border-color: var(--cal); }
+  @media (max-width: 640px) { .arere span { display: none; } .arere { padding: 8px 10px; } }
   /* Zoeira por time: linha dourada embaixo do nome do cartoleiro */
   .zoeira { display: block; margin-top: 4px; color: var(--ouro); font: 600 13px/1.3 var(--rotulo); letter-spacing: .04em; }
   .falta { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
@@ -272,6 +280,16 @@
     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 7l6 6 4-4 8 8"/><path d="M15 17h6v-6"/></svg>
   </section>
 
+  <!-- 06/11: contador do Corinthians, mesma data do Santos. O botão toca o "Arerê". -->
+  <section class="queda cor" aria-label="Contagem para o Corinthians cair">
+    <div class="queda-num" id="queda-cor-num">—</div>
+    <div class="queda-txt"><b id="queda-cor-txt">dias para o Corinthians cair pra Série B</b><span>Também na 38ª rodada, 02/12. Alpaca, pode ir cantando junto.</span></div>
+    <button type="button" class="arere" id="arere" title="Arerê, arerê, o Corinthians vai jogar a Série B">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 18V5l12-2v13"/><circle cx="6" cy="18" r="3"/><circle cx="18" cy="16" r="3"/></svg>
+      <span>Arerê</span>
+    </button>
+  </section>
+
   <section class="trilho" aria-label="Rodadas da disputa">
     <div class="trilho-topo"><span>Rodadas 29 a 38</span><span id="trilho-info"></span></div>
     <div class="rodadas" id="rodadas"></div>
@@ -403,12 +421,75 @@
     }
   };
   // Faixa do topo: número grande + frase. Roda na carga e a cada minuto.
+  // 06/11: as faixas do Santos e do Corinthians usam a mesma contagem; só muda o nome do time.
+  function textoQueda(time, dias) {
+    if (dias > 1) return [String(dias), "dias para o " + time + " cair pra Série B"];
+    if (dias === 1) return ["1", "dia para o " + time + " cair pra Série B"];
+    return ["B", "Brasileirão acabou. Cadê o " + time + "?"];
+  }
   function renderQueda() {
     var dias = diasParaCair();
-    if (dias > 1) { el("queda-num").textContent = dias; el("queda-txt").textContent = "dias para o Santos cair pra Série B"; }
-    else if (dias === 1) { el("queda-num").textContent = "1"; el("queda-txt").textContent = "dia para o Santos cair pra Série B"; }
-    else { el("queda-num").textContent = "B"; el("queda-txt").textContent = "Brasileirão acabou. Cadê o Santos?"; }
+    var s = textoQueda("Santos", dias);
+    el("queda-num").textContent = s[0]; el("queda-txt").textContent = s[1];
+    var c = textoQueda("Corinthians", dias);
+    el("queda-cor-num").textContent = c[0]; el("queda-cor-txt").textContent = c[1];
   }
+
+  // 06/11: botão "Arerê" da faixa do Corinthians.
+  // Se existir um arquivo arere.mp3 na raiz do site, toca ele. Se não existir (hoje não
+  // existe), o próprio navegador canta a frase com a voz do sistema (Web Speech) por cima
+  // de um batuque de arquibancada feito no Web Audio. Nenhum áudio é baixado de fora.
+  var arere = new Audio("arere.mp3"), arereOk = null, arereCtx = null, arereTimer = null;
+  arere.preload = "auto";
+  arere.addEventListener("canplaythrough", function () { arereOk = true; });
+  arere.addEventListener("error", function () { arereOk = false; });
+  arere.addEventListener("ended", pararArere);
+
+  function batuque(ctx) {
+    // 16 batidas (uns 5 s): surdo grave e, a cada 4, uma caixa mais aguda
+    var t0 = ctx.currentTime + .05;
+    for (var i = 0; i < 16; i++) {
+      var t = t0 + i * .32, o = ctx.createOscillator(), g = ctx.createGain();
+      o.frequency.setValueAtTime(i % 4 === 2 ? 190 : 110, t);
+      o.frequency.exponentialRampToValueAtTime(40, t + .18);
+      g.gain.setValueAtTime(.5, t);
+      g.gain.exponentialRampToValueAtTime(.001, t + .22);
+      o.connect(g).connect(ctx.destination);
+      o.start(t); o.stop(t + .25);
+    }
+  }
+  function cantarNoNavegador() {
+    var frase = "Arerê, arerê! O Corinthians vai jogar a Série B!";
+    try {
+      arereCtx = new (window.AudioContext || window.webkitAudioContext)();
+      batuque(arereCtx);
+    } catch (e) { /* sem Web Audio: fica só a voz */ }
+    if (!("speechSynthesis" in window)) { arereTimer = setTimeout(pararArere, 5500); return; }
+    speechSynthesis.cancel();
+    var u = new SpeechSynthesisUtterance(frase + " " + frase);
+    u.lang = "pt-BR"; u.rate = .95; u.pitch = 1.15;
+    var voz = speechSynthesis.getVoices().filter(function (v) { return /pt[-_]BR/i.test(v.lang); })[0];
+    if (voz) u.voice = voz;
+    u.onend = pararArere; u.onerror = pararArere;
+    speechSynthesis.speak(u);
+    arereTimer = setTimeout(pararArere, 15000);   // garantia, caso o navegador nunca avise o fim
+  }
+  function pararArere() {
+    el("arere").classList.remove("tocando");
+    clearTimeout(arereTimer);
+    if (arereOk && !arere.paused) arere.pause();
+    if ("speechSynthesis" in window) speechSynthesis.cancel();
+    if (arereCtx) { arereCtx.close(); arereCtx = null; }
+  }
+  function tocarArere() {
+    var btn = el("arere");
+    if (btn.classList.contains("tocando")) { pararArere(); return; }
+    btn.classList.add("tocando");
+    if (arereOk === false) { cantarNoNavegador(); return; }
+    arere.currentTime = 0;
+    arere.play().catch(cantarNoNavegador);   // arquivo não existe ou não carregou: canta no navegador
+  }
+  el("arere").addEventListener("click", tocarArere);
   function zoeira(t) {
     var f = ZOEIRA[t.id];
     return f ? '<span class="zoeira">' + esc(f()) + "</span>" : "";
