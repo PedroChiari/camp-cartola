@@ -35,6 +35,8 @@ Os dois contadores usam a mesma data, `FIM_BRASILEIRAO` no `index.html` (última
 O botão **Arerê** toca `arere.mp3` se esse arquivo existir na raiz do repositório; sem o arquivo,
 o navegador canta a frase com a voz do sistema por cima de um batuque gerado na hora.
 Para usar um áudio de verdade, basta colocar o `arere.mp3` na raiz e dar push.
+Com o arquivo no lugar, o site tenta tocar sozinho ao abrir; como os navegadores bloqueiam som
+automático, na prática ele toca no primeiro clique ou toque do visitante em qualquer ponto da página.
 
 ## Mudar times ou rodadas
 

@@ -490,6 +490,27 @@
     arere.play().catch(cantarNoNavegador);   // arquivo não existe ou não carregou: canta no navegador
   }
   el("arere").addEventListener("click", tocarArere);
+
+  // 06/11: tocar o Arerê sozinho quando o site abre. Os navegadores só liberam som
+  // automático depois de o visitante interagir com a página (o Chrome abre exceção para
+  // quem já usou o site outras vezes). Então: tenta assim que o áudio carrega; se for
+  // bloqueado, toca no primeiro clique/toque/tecla em qualquer lugar. Vale só para o
+  // arere.mp3 — a voz do navegador fica só no botão. Toca uma vez por abertura.
+  var arereAuto = false;
+  function arereSozinho(e) {
+    if (arereAuto || arereOk === false) return;
+    if (e && e.target && e.target.closest && e.target.closest("#arere")) return;   // o botão cuida de si
+    arere.currentTime = 0;
+    arere.play().then(function () {
+      arereAuto = true;
+      el("arere").classList.add("tocando");
+      document.removeEventListener("pointerdown", arereSozinho);
+      document.removeEventListener("keydown", arereSozinho);
+    }).catch(function () { /* bloqueado pelo navegador: espera o primeiro toque */ });
+  }
+  arere.addEventListener("canplaythrough", function () { arereSozinho(); }, { once: true });
+  document.addEventListener("pointerdown", arereSozinho);
+  document.addEventListener("keydown", arereSozinho);
   function zoeira(t) {
     var f = ZOEIRA[t.id];
     return f ? '<span class="zoeira">' + esc(f()) + "</span>" : "";
