@@ -37,10 +37,18 @@ o navegador canta a frase com a voz do sistema por cima de um batuque gerado na 
 Para usar um áudio de verdade, basta colocar o `arere.mp3` na raiz e dar push.
 Com o arquivo no lugar, o site tenta tocar sozinho ao abrir; como os navegadores bloqueiam som
 automático, na prática ele toca no primeiro clique ou toque do visitante em qualquer ponto da página.
-Além disso, ao abrir o site (uma vez por sessão do navegador) aparece uma janela com o player oficial da
-ESPN (o "syndicated player", feito para ser embutido) com o clipe da torcida cantando o Arerê; o visitante dá o
-play e o som já vem ligado. O vídeo fica nos servidores da ESPN, o site só embute o player. O botão **Vídeo**
-reabre a janela. Esse player não aceita autoplay nem tempo inicial por parâmetro.
+Ao abrir o site (uma vez por sessão do navegador) aparece a **tela de entrada "Série B"**: preto e branco
+listrado, letreiro piscando, camisa despencando da Série A para a B, contador de dias e confete. Qualquer toque
+na tela entra no site; como esse toque é um gesto do visitante, o navegador libera o som, então nesse momento o
+Arerê toca (mp3 ou voz) e abre a janela com o player oficial da ESPN (o "syndicated player", feito para ser
+embutido) com o clipe da torcida cantando; o visitante dá o play e o som já vem ligado. O vídeo fica nos
+servidores da ESPN, o site só embute o player, que não aceita autoplay nem tempo inicial por parâmetro.
+Na faixa do Corinthians, **Vídeo** reabre a janela e **Entrada** reabre a tela de entrada.
+
+A faixa do Corinthians ainda tem um letreiro rolante, o número pulsando, uma tremida a cada 7 s e o
+"termômetro do rebaixamento", que anda com as 38 rodadas do Brasileirão (`rodada_ao_vivo` ou `ultima_fechada`
+do `data.json`) e chega a 100% ("Caiu!") no fim do campeonato. O card do time do corintiano (id 595076)
+ganha a faixa diagonal "Série B 2027" e um apelido que troca a cada minuto (lista `ZOEIRA` no `index.html`).
 
 ## Mudar times ou rodadas
 
