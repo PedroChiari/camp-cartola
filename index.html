@@ -577,6 +577,9 @@
     var aoVivo = d.rodada_ao_vivo && d.rodada_ao_vivo >= ini && d.rodada_ao_vivo <= fim ? d.rodada_ao_vivo : null;
     var restantes = d.fim_de_jogo ? 0 : Math.max(0, fim - Math.max(d.ultima_fechada, ini - 1));
     var encerrado = d.fim_de_jogo || d.ultima_fechada >= fim;
+    // 06/11: rodadas que ainda contam para virar. Com rodada rolando, a diferença para o líder já
+    // inclui a parcial dela, então ela não entra na divisão: ficam só as rodadas depois dela.
+    var paraVirar = aoVivo ? Math.max(0, fim - aoVivo) : restantes;
 
     // Placar considerando parcial ao vivo
     var times = d.times.map(function (t) {
@@ -622,15 +625,19 @@
       '<div class="placar"><div class="num">' + valor[0] + "<small>," + valor[1] + '</small></div><div class="un">pontos na disputa</div>' + parcialLider + "</div>";
 
     // Caça
-    el("caca-info").textContent = restantes > 0 ? restantes + (restantes === 1 ? " rodada" : " rodadas") + " para virar" : (encerrado ? "Placar final" : "");
+    el("caca-info").textContent =
+      encerrado ? "Placar final" :
+      aoVivo ? (paraVirar > 0 ? paraVirar + (paraVirar === 1 ? " rodada" : " rodadas") + " e o resto desta para virar" : "Só o resto desta rodada para virar") :
+      restantes > 0 ? restantes + (restantes === 1 ? " rodada" : " rodadas") + " para virar" : "";
     el("caca").innerHTML = times.slice(1).map(function (t, i) {
       var diff = lider.vivo - t.vivo;
-      var porRodada = restantes > 0 ? diff / restantes : null;
+      var porRodada = paraVirar > 0 ? diff / paraVirar : null;
       var pct = lider.vivo > 0 ? Math.max(0, Math.min(100, (t.vivo / lider.vivo) * 100)) : 100;
       var frase;
       if (diff < 0.005) frase = "Empatado com o líder. Qualquer ponto a mais assume a ponta.";
       else if (encerrado) frase = "Terminou <b>" + fmt(diff) + "</b> pontos atrás.";
-      else frase = "Para passar, precisa somar <b>" + fmt(diff + 0.01) + "</b> pontos a mais que o " + esc(lider.nome) + " até a rodada " + fim + ". Dá uns <b>" + fmtCurto(porRodada) + "</b> a mais por rodada.";
+      else if (porRodada == null) frase = "Para passar, precisa somar <b>" + fmt(diff + 0.01) + "</b> pontos a mais que o " + esc(lider.nome) + " no que falta desta rodada.";
+      else frase = "Para passar, precisa somar <b>" + fmt(diff + 0.01) + "</b> pontos a mais que o " + esc(lider.nome) + " até a rodada " + fim + ". Dá uns <b>" + fmtCurto(porRodada) + "</b> a mais por rodada" + (aoVivo ? ", fora o que ainda rola nesta" : "") + ".";
       return '<article class="perseguidor">' +
         '<div class="p-topo">' + escudo(t) + '<div class="p-nome"><b>' + esc(t.nome) + "</b><span>" + esc(t.cartola) + "</span>" + zoeira(t) + "</div><div class=\"posicao\">" + (i + 2) + "º</div></div>" +
         '<dl class="falta"><div><dt>Atrás do líder</dt><dd class="' + (diff > 0 ? "quente" : "") + '">' + (diff > 0 ? "−" : "") + fmt(diff) + "</dd></div>" +
